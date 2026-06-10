@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Link</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>🛡️ Safe Link</h1>
+
+        <p>
+            Analiza enlaces sospechosos antes de abrirlos.
+        </p>
+
+        <input
+            type="text"
+            id="url"
+            class="input"
+            placeholder="Pega aquí el enlace">
+
+        <button id="btnAnalizar">
+            Analizar
+        </button>
+
+        <h2>Resultado</h2>
+
+        <div id="resultado">
+            Esperando análisis...
+        </div>
+
+        <div class="info">
+
+            <h3>Consejos rápidos</h3>
+
+            <ul>
+                <li>Verifica que el enlace utilice HTTPS.</li>
+                <li>Revisa que el dominio sea correcto.</li>
+                <li>Desconfía de enlaces demasiado largos o extraños.</li>
+                <li>No ingreses información personal en sitios desconocidos.</li>
+            </ul>
+
+        </div>
+
+        <footer>
+            <p>
+                Safe Link - Herramienta educativa para el análisis de enlaces y la navegación segura.
+            </p>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
