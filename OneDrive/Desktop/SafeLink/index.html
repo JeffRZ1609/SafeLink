@@ -4,23 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Safe Link</title>
-
     <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
 
-    <header>
-        <div class="logo">
-            🛡️
-        </div>
+    <h1>SafeLink</h1>
 
-        <h1>Safe Link</h1>
+    <p>Analiza enlaces sospechosos antes de abrirlos.</p>
 
-        <p>
-            Analiza enlaces sospechosos de forma segura antes de abrirlos.
-        </p>
-    </header>
+<input
+    type="text"
+    id="url"
+    class="input"
+    placeholder="Pega aquí el enlace">
+
+<button id="btnAnalizar">
+    Analizar
+</button>
+
+<h2>Resultado</h2>
+
+<div id="resultado">
+    Esperando análisis...
+</div>  
+
+    <script src="app.js"></script>
 
 </body>
 </html>
