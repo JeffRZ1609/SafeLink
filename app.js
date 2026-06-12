@@ -31,6 +31,20 @@ boton.addEventListener("click", function () {
         "is.gd"
     ];
 
+     const regexIP =
+        /^(\d{1,3}\.){3}\d{1,3}$/;
+
+    const palabrasPhishing = [
+        "login",
+        "verify",
+        "secure",
+        "update",
+        "password",
+        "bank",
+        "gift",
+        "premio",
+        "cuenta"
+    ];
 
     if (enlace === "") {
 
@@ -51,13 +65,31 @@ boton.addEventListener("click", function () {
                 "El destino real del enlace está oculto.<br>";
         }
 
+        if (regexIP.test(dominio)){
+
+            alertas +=
+                "Se detectó una dirección IP en lugar de un dominio.<br>" +
+                "Algunos sitios maliciosos utilizan direcciones IP para ocultar su verdadera identidad.<br><br>";
+        }
+
+        for (let palabra of palabrasPhishing){
+
+            if (enlace.toLowerCase().includes(palabra)) {
+
+                alertas +=
+                    "El enlace contiene palabras frecuentes utilizada en links para phishing.<br><br>"
+
+                break;
+            }
+
+        }
         resultado.innerHTML =
 
             " El enlace parece seguro.<br>" +
             "Utiliza HTTPS, que es un protocolo más seguro para navegar." +
 
             "<br><strong>Protocolo:</strong>" + protocolo +
-            "<br><strong>Dominio</strong>" + dominio +
+            "<br><strong>Dominio:</strong>" + dominio +
             "<br><strong>Ruta:</strong>" + ruta +
             "<br><br>" + alertas;
 
@@ -77,6 +109,23 @@ boton.addEventListener("click", function () {
                 "El destino real del enlace está oculto.<br>";
         }
 
+                if (regexIP.test(dominio)){
+
+            alertas +=
+                "Se detectó una dirección IP en lugar de un dominio.<br>" +
+                "Algunos sitios maliciosos utilizan direcciones IP para ocultar su verdadera identidad.<br><br>";
+        }
+
+        for (let palabra of palabrasPhishing){
+
+            if (enlace.toLowerCase().includes(palabra)) {
+
+                alertas +=
+                    "El enlace contiene palabras frecuentes utilizada en links para phishing.<br><br>"
+
+                break;
+            }
+        }
 
         resultado.innerHTML =
 
@@ -85,7 +134,7 @@ boton.addEventListener("click", function () {
 
 
             "<br><strong>Protocolo:</strong>" + protocolo +
-            "<br><strong>Dominio</strong>" + dominio +
+            "<br><strong>Dominio:</strong>" + dominio +
             "<br><strong>Ruta:</strong>" + ruta;
 
 
