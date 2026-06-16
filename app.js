@@ -82,12 +82,21 @@ boton.addEventListener("click", async function () {
 
             "<hr>" +
 
-            "<strong>Análisis de la pagina:</strong><br>" +
+            "<strong>Análisis de la página:</strong><br>" +
 
             "<strong>Título:</strong> " + datos.titulo +
 
-            "<br><strong>Tamaño HTML:</strong> " + datos.longitudHTML;
+            "<br><strong>Tamaño HTML:</strong> " + datos.longitudHTML +
 
+            "<br><strong>Formularios:</strong> " + datos.formularios +
+
+            "<br><strong>Inputs:</strong> " + datos.inputs +
+
+            "<br><strong>Campos de contraseña:</strong> " + datos.camposPassword +
+
+            "<br><strong>Botones de envío:</strong> " + datos.botonesEnviar;
+
+  
     }
 
     catch (error) {

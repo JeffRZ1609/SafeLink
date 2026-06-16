@@ -12,7 +12,6 @@ const PORT = 3000;
 
 
 // MNiddlewares
-
 app.use(cors());
 app.use(express.json());
 
@@ -38,15 +37,44 @@ app.post("/analizar", async (req, res) => {
 
         const html = respuesta.data;
 
+        let muestraHTML = html.substring(0, 500);
+
         const $ = cheerio.load(html);
 
         const titulo = $("title").text();
 
+        let formularios = $("form").length;
+
+        let inputs = $("input").length;
+
+        let camposPassword =
+            $('input[type="password"]').length;
+
+        let botonesSubmit =
+            $('button[type="submit"]').length;
+
+        let inputsSubmit =
+            $('input[type="submit"]').length;
+
+        let botonesEnviar =
+            botonesSubmit + inputsSubmit;
+        
+        let totalEnlaces =
+            $("a").length;
+        
+        
+        
         res.json({
 
             mensaje: "HTML obtenido correctamente.",
             longitudHTML: html.length,
-            titulo: titulo
+            htmlRecibido: muestraHTML,
+            titulo: titulo,
+            formularios: formularios,
+            inputs: inputs,
+            camposPassword: camposPassword,
+            botonesEnviar: botonesEnviar,
+            totalEnlaces: totalEnlaces,
 
         });
 
