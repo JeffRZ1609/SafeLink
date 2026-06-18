@@ -3,60 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safe Link</title>
+    <title>Safe Link - Analizador de Enlaces Seguro</title>
     <link rel="stylesheet" href="index.css">
-</head>
+    </head>
 <body>
 
     <div class="container">
 
-        <h1 class="logo-title">
-            <img src="logo.png" alt="Safe Link Logo" class="logo">
-            Safe Link
-        </h1>
-
-        <p>
-            Analiza enlaces sospechosos antes de abrirlos.
-        </p>
-
-        <input
-            type="text"
-            id="url"
-            class="input"
-            placeholder="Pega aquí el enlace">
-
-        <button id="btnAnalizar">
-            Analizar
-        </button>
-
-        <h2>Resultado</h2>
-
-        <div id="resultado">
-            Esperando análisis...
-        </div>
-
-        <div class="info">
-
-            <h3>Consejos rápidos</h3>
-
-            <ul>
-                <li>Verifica que el enlace utilice HTTPS.</li>
-                <li>Revisa que el dominio sea correcto.</li>
-                <li>Desconfía de enlaces demasiado largos o extraños.</li>
-                <li>No ingreses información personal en sitios desconocidos.</li>
-            </ul>
-
-        </div>
-
-        <footer>
-            <p>
-                Safe Link - Herramienta educativa para el análisis de enlaces y la navegación segura.
+        <header class="main-header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Safe Link Logo" class="logo">
+                <h1 class="logo-title">Safe Link</h1>
+            </div>
+            <p class="subtitle">
+                Protección digital al instante. Analiza enlaces sospechosos, detecta amenazas potenciales y navega con total confianza.
             </p>
-        </footer>
+        </header>
+
+        <main class="content-layout">
+
+            <section class="analyzer-section">
+                <div class="input-group">
+                    <label for="url" class="input-label">Introduce la URL a verificar:</label>
+                    <input
+                        type="url"
+                        id="url"
+                        class="input"
+                        placeholder="https://ejemplo.com/enlace-sospechoso"
+                        required>
+                    <button id="btnAnalizar" class="btn-primary">
+                        <span>Analizar Enlace</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <h2 class="section-title">Estado del Análisis</h2>
+                <div id="resultado" class="status-card waiting">
+                    <div class="status-icon">🔍</div>
+                    <div class="status-text">
+                        <p class="status-title">Esperando análisis...</p>
+                        <p class="status-desc">Introduce una dirección URL en el cuadro superior y haz clic en "Analizar".</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features-section">
+                <h2 class="section-title">¿Cómo funciona Safe Link?</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <h4> Análisis Heurístico</h4>
+                        <p>Evaluamos la estructura del enlace para detectar anomalías tipográficas o dominios engañosos.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4> Verificación en Tiempo Real</h4>
+                        <p>Consultamos bases de datos de amenazas actualizadas para identificar reportes de phishing activos.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4> Privacidad Garantizada</h4>
+                        <p>Tus búsquedas son completamente confidenciales. No almacenamos ni rastreamos los enlaces que analizas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <h3 class="section-title-alt">Consejos rápidos de ciberseguridad</h3>
+                <ul class="tips-list">
+                    <li>
+                        <strong>Protocolo Seguro:</strong> Verifica siempre que el enlace comience con <code>https://</code>.
+                    </li>
+                    <li>
+                        <strong>Inspección de Dominio:</strong> Revisa minuciosamente que el nombre de la web no tenga letras cambiadas (ej. <code>banc0</code> en vez de <code>banco</code>).
+                    </li>
+                    <li>
+                        <strong>Enlaces Acortados:</strong> Desconfía de URLs sospechosamente cortas o camufladas que no muestren el destino final.
+                    </li>
+                    <li>
+                        <strong>Principio de Prudencia:</strong> Nunca ingreses credenciales o datos bancarios si accediste al sitio a través de un mensaje inesperado.
+                    </li>
+                </ul>
+            </section>
+
+        </main>
+
+        <footer class="main-footer">
+            <p>© 2026 Safe Link — Herramienta educativa para el análisis de enlaces y la promoción de la navegación segura.</p>
+        </</footer>
 
     </div>
 
     <script src="app.js"></script>
-
 </body>
 </html>
