@@ -13,7 +13,7 @@ boton.addEventListener("click", async function () {
     if (enlace !== "" && !match) {
 
         resultado.innerHTML =
-            "El enlace no parece valido.<br>";
+            "El enlace no parece válido.<br>";
 
         return;
     }
@@ -82,21 +82,170 @@ boton.addEventListener("click", async function () {
 
             "<hr>" +
 
-            "<strong>Análisis de la página:</strong><br>" +
+            "<strong>Análisis de la página:</strong><br>";
 
-            "<strong>Título:</strong> " + datos.titulo +
+        informacionBackend +=
 
-            "<br><strong>Tamaño HTML:</strong> " + datos.longitudHTML +
+            "<br><strong>Título:</strong> " +
 
-            "<br><strong>Formularios:</strong> " + datos.formularios +
+            datos.titulo;
 
-            "<br><strong>Inputs:</strong> " + datos.inputs +
+        informacionBackend +=
 
-            "<br><strong>Campos de contraseña:</strong> " + datos.camposPassword +
+            "<br><strong>Tamaño HTML:</strong> " +
 
-            "<br><strong>Botones de envío:</strong> " + datos.botonesEnviar;
+            datos.longitudHTML;
 
-  
+        if (datos.esLegitimo) {
+
+            informacionBackend +=
+
+                "<br><strong>Dominio reconocido:</strong> Dominio es legítimo.";
+
+        }
+
+        else {
+
+            informacionBackend +=
+
+                "<br><strong>Dominio reconocido:</strong> Dominio no es legítimo.";
+
+        }
+
+        if (datos.formularios > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Formularios:</strong> " +
+
+                datos.formularios;
+
+        }
+
+        if (datos.inputs > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Inputs:</strong> " +
+
+                datos.inputs;
+
+        }
+
+        if (datos.camposPassword > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Campos de contraseña:</strong> " +
+
+                datos.camposPassword;
+
+        }
+
+        if (datos.botonesEnviar > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Botones de envío:</strong> " +
+
+                datos.botonesEnviar;
+
+        }
+
+        if (datos.totalEnlaces > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Total de enlaces:</strong> " +
+
+                datos.totalEnlaces;
+
+        }
+
+        if (datos.archivosDescargables > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Archivos descargables:</strong> " +
+
+                datos.archivosDescargables +
+
+                "<br><strong>Tipos de archivos encontrados:</strong> " +
+
+                datos.extensionesEncontradas.join(", ");
+
+        }
+
+        if (datos.cantidadIframes > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Iframes detectados:</strong> " +
+
+                datos.cantidadIframes;
+
+        }
+
+        if (datos.scriptsExternos > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Scripts externos:</strong> " +
+
+                datos.scriptsExternos;
+
+        }
+
+        if (datos.metaRefresh > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Meta Refresh detectados:</strong> " +
+
+                datos.metaRefresh;
+
+        }
+
+        if (datos.redireccionesJavaScript > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Redirecciones por JavaScript:</strong> " +
+
+                datos.redireccionesJavaScript;
+
+        }
+
+        if (datos.imagenes > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Imágenes detectadas:</strong> " +
+
+                datos.imagenes;
+
+        }
+
+        if (datos.videos > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Videos detectados:</strong> " +
+
+                datos.videos;
+
+        }
+
+        if (datos.audios > 0) {
+
+            informacionBackend +=
+
+                "<br><strong>Audios detectados:</strong> " +
+
+                datos.audios;
+
+        }
+
     }
 
     catch (error) {
@@ -108,7 +257,6 @@ boton.addEventListener("click", async function () {
             "No fue posible obtener información desde el servidor.";
 
     }
-
 
     if (enlace.startsWith("https://")) {
 
@@ -152,7 +300,8 @@ boton.addEventListener("click", async function () {
             "<br><strong>Protocolo:</strong> " + protocolo +
             "<br><strong>Dominio:</strong> " + dominio +
             "<br><strong>Ruta:</strong> " + ruta +
-            "<br><br>" + alertas +
+            "<br><br>" +
+            alertas +
 
             informacionBackend;
 
