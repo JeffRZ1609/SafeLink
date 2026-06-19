@@ -200,8 +200,8 @@ app.post("/analizar", async (req, res) => {
 
 // Servidor
 
-app.listen(PORT, () => {
+app.listen(PORT, "172.238.205.45", () => {
 
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+    console.log(`Servidor ejecutándose en http://172.238.205.45:${PORT}`);
 
 });
