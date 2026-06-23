@@ -10,17 +10,30 @@ boton.addEventListener("click", async function () {
 
     const match = enlace.match(regex);
 
-    if (enlace !== "" && !match) {
+    if (enlace === "") {
 
         resultado.innerHTML =
-            "El enlace no parece válido.<br>";
+            "Por favor, ingrese un enlace.";
 
         return;
     }
 
-    let positivos = "";
+    if (!match) {
+
+        resultado.innerHTML =
+            "El enlace no parece válido.<br>" +
+            "Verifique que incluya http:// o https://";
+
+        return;
+    }
+
+    let protocolo = match[1];
+    let dominio = match[2];
+    let ruta = match[3] || "/";
+
     let alertas = "";
     let informacionBackend = "";
+    let nivelRiesgo = "";
 
     const acortadores = [
         "bit.ly",
@@ -28,7 +41,8 @@ boton.addEventListener("click", async function () {
         "t.co",
         "cutt.ly",
         "ow.ly",
-        "is.gd"
+        "is.gd",
+        "shorturl.at"
     ];
 
     const regexIP =
@@ -43,18 +57,63 @@ boton.addEventListener("click", async function () {
         "bank",
         "gift",
         "premio",
-        "cuenta"
+        "cuenta",
+        "beneficio",
+        "saldo",
+        "registre",
+        "registrar",
+        "mastercard",
+        "visa",
+        "tarjeta",
+        "banco",
+        "habilitado",
+        "nacional",
+        "bono",
+        "subsidio"
     ];
 
-    if (enlace === "") {
+    let dominioLimpio =
+        dominio.replace("www.", "").toLowerCase();
 
-        resultado.innerHTML =
-            "Por favor, ingrese un enlace.";
+    let esAcortador =
+        acortadores.includes(dominioLimpio);
 
-        return;
+    let tienePalabrasPhishing = false;
+
+    if (protocolo === "http") {
+
+        alertas +=
+            "• El enlace utiliza HTTP en lugar de HTTPS. La información enviada podría no estar cifrada.<br>";
+
     }
 
-    // CONEXIÓN CON EL BACKEND
+    if (esAcortador) {
+
+        alertas +=
+            "• Se detectó una URL acortada. El destino real del enlace esta oculto.<br>";
+
+    }
+
+    if (regexIP.test(dominio)) {
+
+        alertas +=
+            "• Se detectó una dirección IP en lugar de un dominio. Esto puede ocultar la identidad real del sitio.<br>";
+
+    }
+
+    for (let palabra of palabrasPhishing) {
+
+        if (enlace.toLowerCase().includes(palabra)) {
+
+            tienePalabrasPhishing = true;
+
+            alertas +=
+                "• El enlace contiene palabras utilizadas frecuentemente en intentos de phishing.<br>";
+
+            break;
+        }
+
+    }
 
     try {
 
@@ -63,20 +122,19 @@ boton.addEventListener("click", async function () {
             method: "POST",
 
             headers: {
-
                 "Content-Type": "application/json"
-
             },
 
             body: JSON.stringify({
-
                 url: enlace
-
             })
 
         });
 
         const datos = await respuesta.json();
+
+        nivelRiesgo =
+            datos.nivelRiesgo || "No determinado";
 
         informacionBackend =
 
@@ -84,23 +142,27 @@ boton.addEventListener("click", async function () {
 
             "<strong>Análisis de la página:</strong><br>";
 
+        if (datos.titulo) {
+
+            informacionBackend +=
+
+                "<br><strong>Título:</strong> " +
+
+                datos.titulo;
+
+        }
+
         informacionBackend +=
 
-            "<br><strong>Título:</strong> " +
+            "<br><strong>Dominio analizado:</strong> " +
 
-            datos.titulo;
-
-        informacionBackend +=
-
-            "<br><strong>Tamaño HTML:</strong> " +
-
-            datos.longitudHTML;
+            datos.dominio;
 
         if (datos.esLegitimo) {
 
             informacionBackend +=
 
-                "<br><strong>Dominio reconocido:</strong> Dominio es legítimo.";
+                "<br><strong>Estado del dominio:</strong> Reconocido.";
 
         }
 
@@ -108,147 +170,212 @@ boton.addEventListener("click", async function () {
 
             informacionBackend +=
 
-                "<br><strong>Dominio reconocido:</strong> Dominio no es legítimo.";
+                "<br><strong>Estado del dominio:</strong> No reconocido.";
 
         }
 
-        if (datos.formularios > 0) {
+        if (
+            datos.urlFinal &&
+            datos.urlFinal !== enlace
+        ) {
 
             informacionBackend +=
 
-                "<br><strong>Formularios:</strong> " +
+                "<br><br><strong>URL final:</strong> " +
 
-                datos.formularios;
+                datos.urlFinal +
+
+                "<br><strong>Dominio final:</strong> " +
+
+                datos.dominioFinal;
+
+            if (datos.dominioFinalLegitimo) {
+
+                informacionBackend +=
+
+                    "<br><strong>Estado del dominio final:</strong> Reconocido.";
+
+            }
+
+            else {
+
+                informacionBackend +=
+
+                    "<br><strong>Estado del dominio final:</strong> No reconocido.";
+
+            }
 
         }
 
-        if (datos.inputs > 0) {
+        if (datos.nivelRiesgo) {
 
             informacionBackend +=
 
-                "<br><strong>Inputs:</strong> " +
+                "<br><br><strong>Nivel de riesgo:</strong> " +
 
-                datos.inputs;
+                datos.nivelRiesgo;
 
         }
 
-        if (datos.camposPassword > 0) {
+        if (
+            datos.resumenAnalisis &&
+            datos.resumenAnalisis.length > 0
+        ) {
 
             informacionBackend +=
 
-                "<br><strong>Campos de contraseña:</strong> " +
+                "<br><br><strong>Resumen:</strong><br>";
 
-                datos.camposPassword;
+            for (let resumen of datos.resumenAnalisis) {
+
+                informacionBackend +=
+
+                    "• " + resumen + "<br>";
+
+            }
 
         }
 
-        if (datos.botonesEnviar > 0) {
+        if (alertas !== "") {
 
             informacionBackend +=
 
-                "<br><strong>Botones de envío:</strong> " +
+                "<br><strong>Alertas del enlace:</strong><br>" +
 
-                datos.botonesEnviar;
+                alertas;
 
         }
 
-        if (datos.totalEnlaces > 0) {
+        if (
+            datos.consecuencias &&
+            datos.consecuencias.length > 0
+        ) {
 
             informacionBackend +=
 
-                "<br><strong>Total de enlaces:</strong> " +
+                "<br><strong>Posibles consecuencias:</strong><br>";
 
-                datos.totalEnlaces;
+            for (let consecuencia of datos.consecuencias) {
+
+                informacionBackend +=
+
+                    "• " + consecuencia + "<br>";
+
+            }
 
         }
 
-        if (datos.archivosDescargables > 0) {
+        let detallesTecnicos = "";
 
-            informacionBackend +=
+        if (
+            datos.camposPassword > 0 &&
+            !datos.dominioFinalLegitimo
+        ) {
 
-                "<br><strong>Archivos descargables:</strong> " +
+            detallesTecnicos +=
 
-                datos.archivosDescargables +
+                "• Campos de contraseña en dominio no reconocido: " +
 
-                "<br><strong>Tipos de archivos encontrados:</strong> " +
+                datos.camposPassword +
 
-                datos.extensionesEncontradas.join(", ");
-
-        }
-
-        if (datos.cantidadIframes > 0) {
-
-            informacionBackend +=
-
-                "<br><strong>Iframes detectados:</strong> " +
-
-                datos.cantidadIframes;
+                "<br>";
 
         }
 
-        if (datos.scriptsExternos > 0) {
+        if (
+            datos.archivosEjecutables > 0
+        ) {
 
-            informacionBackend +=
+            detallesTecnicos +=
 
-                "<br><strong>Scripts externos:</strong> " +
+                "• Archivos ejecutables o comprimidos detectados: " +
 
-                datos.scriptsExternos;
+                datos.archivosEjecutables +
 
-        }
+                " (" +
 
-        if (datos.metaRefresh > 0) {
+                datos.extensionesEncontradas.join(", ") +
 
-            informacionBackend +=
-
-                "<br><strong>Meta Refresh detectados:</strong> " +
-
-                datos.metaRefresh;
+                ")<br>";
 
         }
 
-        if (datos.redireccionesJavaScript > 0) {
+        if (
+            datos.metaRefresh > 0 &&
+            !datos.dominioFinalLegitimo
+        ) {
 
-            informacionBackend +=
+            detallesTecnicos +=
 
-                "<br><strong>Redirecciones por JavaScript:</strong> " +
+                "• Redirección automática Meta Refresh en dominio no reconocido: " +
 
-                datos.redireccionesJavaScript;
+                datos.metaRefresh +
 
-        }
-
-        if (datos.imagenes > 0) {
-
-            informacionBackend +=
-
-                "<br><strong>Imágenes detectadas:</strong> " +
-
-                datos.imagenes;
+                "<br>";
 
         }
 
-        if (datos.videos > 0) {
+        if (
+            datos.redireccionesJavaScript > 0 &&
+            !datos.dominioFinalLegitimo
+        ) {
 
-            informacionBackend +=
+            detallesTecnicos +=
 
-                "<br><strong>Videos detectados:</strong> " +
+                "• Redirecciones por JavaScript en dominio no reconocido: " +
 
-                datos.videos;
+                datos.redireccionesJavaScript +
+
+                "<br>";
 
         }
 
-        if (datos.audios > 0) {
+        if (
+            datos.cantidadIframes > 0 &&
+            !datos.dominioFinalLegitimo
+        ) {
+
+            detallesTecnicos +=
+
+                "• Iframes detectados en dominio no reconocido: " +
+
+                datos.cantidadIframes +
+
+                "<br>";
+
+        }
+
+        if (
+            datos.scriptsExternos > 10 &&
+            !datos.dominioFinalLegitimo
+        ) {
+
+            detallesTecnicos +=
+
+                "• Varios scripts externos en dominio no reconocido: " +
+
+                datos.scriptsExternos +
+
+                "<br>";
+
+        }
+
+        if (detallesTecnicos !== "") {
 
             informacionBackend +=
 
-                "<br><strong>Audios detectados:</strong> " +
+                "<br><strong>Detalles técnicos relevantes:</strong><br>" +
 
-                datos.audios;
+                detallesTecnicos;
 
         }
 
     }
 
     catch (error) {
+
+        nivelRiesgo =
+            "No determinado";
 
         informacionBackend =
 
@@ -258,109 +385,51 @@ boton.addEventListener("click", async function () {
 
     }
 
-    if (enlace.startsWith("https://")) {
+    let resultadoPrincipal = "";
 
-        let protocolo = match[1];
-        let dominio = match[2];
-        let ruta = match[3] || "/";
+    if (
+        nivelRiesgo === "Alto" ||
+        esAcortador ||
+        regexIP.test(dominio) ||
+        tienePalabrasPhishing
+    ) {
 
-        positivos += "✓ Utiliza HTTPS<br>";
-
-        if (acortadores.includes(dominio)) {
-
-            alertas +=
-                "URL acortada detectada.<br>" +
-                "El destino real del enlace está oculto.<br>";
-        }
-
-        if (regexIP.test(dominio)) {
-
-            alertas +=
-                "Se detectó una dirección IP en lugar de un dominio.<br>" +
-                "Algunos sitios maliciosos utilizan direcciones IP para ocultar su verdadera identidad.<br><br>";
-        }
-
-        for (let palabra of palabrasPhishing) {
-
-            if (enlace.toLowerCase().includes(palabra)) {
-
-                alertas +=
-                    "El enlace contiene palabras frecuentes utilizadas en links para phishing.<br><br>";
-
-                break;
-            }
-
-        }
-
-        resultado.innerHTML =
-
-            "El enlace parece seguro.<br>" +
-            "Utiliza HTTPS, que es un protocolo más seguro para navegar." +
-
-            "<br><strong>Protocolo:</strong> " + protocolo +
-            "<br><strong>Dominio:</strong> " + dominio +
-            "<br><strong>Ruta:</strong> " + ruta +
-            "<br><br>" +
-            alertas +
-
-            informacionBackend;
+        resultadoPrincipal =
+            "Resultado: el enlace presenta señales sospechosas. Se recomienda no abrirlo sin verificar su origen.";
 
     }
 
-    else if (enlace.startsWith("http://")) {
+    else if (nivelRiesgo === "Medio") {
 
-        let protocolo = match[1];
-        let dominio = match[2];
-        let ruta = match[3] || "/";
+        resultadoPrincipal =
+            "Resultado: se recomienda precaución antes de abrir este enlace.";
 
-        alertas +=
-            "Utiliza HTTP en lugar de HTTPS.<br>";
+    }
 
-        if (acortadores.includes(dominio)) {
+    else if (nivelRiesgo === "Bajo") {
 
-            alertas +=
-                "URL acortada detectada.<br>" +
-                "El destino real del enlace está oculto.<br>";
-        }
-
-        if (regexIP.test(dominio)) {
-
-            alertas +=
-                "Se detectó una dirección IP en lugar de un dominio.<br>" +
-                "Algunos sitios maliciosos utilizan direcciones IP para ocultar su verdadera identidad.<br><br>";
-        }
-
-        for (let palabra of palabrasPhishing) {
-
-            if (enlace.toLowerCase().includes(palabra)) {
-
-                alertas +=
-                    "El enlace contiene palabras frecuentes utilizadas en links para phishing.<br><br>";
-
-                break;
-            }
-
-        }
-
-        resultado.innerHTML =
-
-            "<strong>Alertas:</strong><br>" +
-            alertas +
-
-            "<br><strong>Protocolo:</strong> " + protocolo +
-            "<br><strong>Dominio:</strong> " + dominio +
-            "<br><strong>Ruta:</strong> " + ruta +
-
-            informacionBackend;
+        resultadoPrincipal =
+            "Resultado: el enlace parece de bajo riesgo según el análisis realizado.";
 
     }
 
     else {
 
-        resultado.innerHTML =
-            "El enlace no parece válido.<br>" +
-            "Verifique que esté escrito correctamente.";
+        resultadoPrincipal =
+            "Resultado: no fue posible determinar completamente el nivel de riesgo.";
 
     }
+
+    resultado.innerHTML =
+
+        "<strong>" + resultadoPrincipal + "</strong>" +
+
+        "<br><br><strong>Protocolo:</strong> " + protocolo +
+
+        "<br><strong>Dominio:</strong> " + dominio +
+
+        "<br><strong>Ruta:</strong> " + ruta +
+
+        informacionBackend;
 
 });

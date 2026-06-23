@@ -4,7 +4,6 @@
   --ink:        #0d1117;
   --ink-soft:   #3d4a5c;
   --ink-muted:  #8a95a3;
-  --paper:      #ffffff;
   --paper-warm: #f7f9fc;
   --rule:       #e8ecf2;
   --azure:      #1a56db;
@@ -206,14 +205,28 @@ body {
 }
 
 .status-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  display: block;
   background: var(--paper-warm);
   padding: 20px 24px;
   border-radius: 12px;
   border: 1px solid var(--rule);
   transition: border-color var(--t), box-shadow var(--t);
+  line-height: 1.6;
+  text-align: left;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.status-card strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-card hr {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid #c2cfe0;
 }
 
 .status-card:hover {
