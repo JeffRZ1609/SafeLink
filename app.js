@@ -117,7 +117,7 @@ boton.addEventListener("click", async function () {
 
     try {
 
-        const respuesta = await fetch("http://localhost:3000/analizar", {
+        const respuesta = await fetch("/analizar", {
 
             method: "POST",
 
