@@ -18,6 +18,7 @@ let dominiosLegitimos = new Set();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname));
 
 
 // Cargar lista de dominios legitimos desde el archivo CSV
